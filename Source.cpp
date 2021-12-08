@@ -30,6 +30,7 @@ public:
     int costliestEdge();
     int mostAdjacents();
     void greedyColoring(map<int, string> c, int numbcolors_);
+    void WelshPowellColoring(map<int, string> c, int numbcolors_);
 };
 
 void Graph::insertEdge(int from, int to, int weight)
@@ -159,6 +160,81 @@ void Graph::greedyColoring(map<int, string> c, int numbcolors_) {
     }
 }
 
+void Graph::WelshPowellColoring(map<int, string> c, int numbcolors_) {
+    multimap<int, int> reverse;
+    for (auto it = m.begin(); it != m.end(); ++it) {
+        if (graph.find(it->first) != graph.end()) {
+            reverse.emplace(it->second, it->first);
+        }
+    }
+    for (auto it = reverse.rbegin(); it != reverse.rend(); ++it) {
+        int ccount = 0;
+        map<int, int> holder;
+        for (int i = 0; i < graph.at(it->second).size(); i++) {
+
+            holder.emplace(col.at(graph.at(it->second).at(i).first).first, 0);
+
+        }
+        for (int j = 1; j <= numbcolors_; j++) {
+            if (holder.find(j) == holder.end()) {
+                pair<int, string> p;
+                p.first = j;
+                p.second = c.at(j);
+                col.at(it->second) = p;
+                break;
+            }
+        }
+    }
+    /*int i = 1;
+    
+    for (auto it = reverse.rbegin(); it != reverse.rend(); ++it) {
+        map<int, int> neighbor;
+        pair<int, string> p;
+        if (i = 7) {
+            i = 1;
+        }
+        p.first = i;
+        p.second = c.at(i);
+        col.emplace(it->second, p);
+        neighbor.emplace(it->second,0);
+        auto itx = graph.find(it->second);
+        if (itx != graph.end()) {
+
+            //it->second.push(arr[i]);
+
+            for (int i = 0; i < graph.at(it->second).size(); i++) {
+                neighbor.emplace(graph.at(it->second).at(i).first,0);
+            }
+            //std::sort(store.begin(), store.end());
+        }
+        reverse.erase(it->second);
+        for (auto its = reverse.rbegin(); its != reverse.rend(); its++) {
+            if (neighbor.find(its->second) == neighbor.end()) {
+                col.emplace(its->second, p);
+                neighbor.emplace(its->second, 0);
+                auto itx = graph.find(its->second);
+                if (itx != graph.end()) {
+
+                    //it->second.push(arr[i]);
+
+                    for (int i = 0; i < graph.at(its->second).size(); i++) {
+                        neighbor.emplace(graph.at(its->second).at(i).first, 0);
+                    }
+                    //std::sort(store.begin(), store.end());
+                }
+                reverse.erase(its->second);
+}
+            /*if (visited.find(its->second) == visited.end()) {
+               // visited.emplace(its->second);
+               // reverse.erase(its->second);
+            //}
+        }
+        
+        i++;
+    }*/
+}
+
+
 int Graph::mostAdjacents()
 {
     return 0;
@@ -194,7 +270,7 @@ int main()
     for (int i = 1; i <= 100000; i++) {
         std::random_device random;
         std::mt19937 rng(random());
-        std::uniform_int_distribution<int> range(0, 5);
+        std::uniform_int_distribution<int> range(1, 5);
         int adjacencies = range(random);
         for (int j = 0; j < adjacencies; j++) {
             std::random_device rando;
@@ -222,6 +298,7 @@ int main()
     cout << max;
     //vector<int> v = g.getAdjacent(1); 
     //cout << 
+    Graph gW = g;
     g.greedyColoring(color, numbcolors);
     for (int i = 99990; i <= 100000; i++) {
         cout << g.col.at(i).second << endl << i << endl;
@@ -233,6 +310,54 @@ int main()
             vector<int> k = g.getAdjacent(v.at(j));
             for (int z = 0; z < k.size(); z++) {
                // cout << k.at(z) << " ";
+            }
+            cout << endl;
+        }
+
+    }
+    /*for (int i = 1; i <= 100000; i++) {
+
+        gW.m.emplace(i, 0);
+    }
+    for (int i = 1; i <= 100000; i++) {
+        pair<int, string> x;
+        x.first = 0;
+        x.second = "";
+        gW.col.emplace(i, x);
+    }
+    for (int i = 1; i <= 100000; i++) {
+        std::random_device random;
+        std::mt19937 rng(random());
+        std::uniform_int_distribution<int> range(1, 5);
+        int adjacencies = range(random);
+        for (int j = 0; j < adjacencies; j++) {
+            std::random_device rando;
+            std::mt19937 rng(rando());
+            std::uniform_int_distribution<int> ranges(1, 100000);
+            int adjacentVertex = ranges(rando);
+            int check = gW.m.at(adjacentVertex) + 1;
+            int checki = gW.m.at(i) + 1;
+            if (check <= 5 && checki <= 5) {
+                gW.insertEdge(i, adjacentVertex, 0);
+                gW.insertEdge(adjacentVertex, i, 0);
+                gW.m.at(adjacentVertex) = check;
+                gW.m.at(i) = checki;
+            }
+
+        }
+
+    }*/
+    gW.WelshPowellColoring(color, numbcolors);
+    for (int i = 1; i <= 10; i++) {
+        cout << gW.col.at(i).second << endl << i << endl;
+        vector<int> v = gW.getAdjacent(i);
+        for (int j = 0; j < v.size(); j++) {
+            cout << v.at(j) << " " << gW.col.at(v.at(j)).second << " ";
+            //cout << v.at(j) << " ";
+            //cout << g.col.at(v.at(j)).first << endl;   
+            vector<int> k = gW.getAdjacent(v.at(j));
+            for (int z = 0; z < k.size(); z++) {
+                // cout << k.at(z) << " ";
             }
             cout << endl;
         }
