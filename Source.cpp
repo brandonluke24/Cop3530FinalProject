@@ -11,7 +11,7 @@
 #include <random>
 using namespace std;
 
-
+// Graph class mainly taken from Brandon's Graph Implentation in Stepik 7.1
 class Graph
 {
 private:
@@ -21,8 +21,10 @@ private:
 
     // Graph ADJACENCY LIST data structure here 
 public:
+    // Map M stores the number of adjacencies
     map<int, int> m;
-    map<int, pair<int, string>> col;
+    // Map Col stores a Color pair
+    map<int, pair<int, string>> col; 
     void insertEdge(int from, int to, int weight);
     vector<int> getAdjacent(int vertex);
     int getIndegree(int vertex);
@@ -32,7 +34,7 @@ public:
     void greedyColoring(map<int, string> c, int numbcolors_);
     void WelshPowellColoring(map<int, string> c, int numbcolors_);
 };
-
+// Inserts edge between two vertices into graph
 void Graph::insertEdge(int from, int to, int weight)
 {
     vector<pair<int, int>> s;
@@ -56,6 +58,7 @@ void Graph::insertEdge(int from, int to, int weight)
 */
 }
 
+// Returns vector of the neighboring adjacencies of a vertex
 vector<int> Graph::getAdjacent(int vertex)
 {
     vector<int> store;
@@ -81,6 +84,7 @@ vector<int> Graph::getAdjacent(int vertex)
     return store;
 }
 
+// Function returns the in degree of a given vertex
 int Graph::getIndegree(int vertex)
 {
     /*
@@ -98,6 +102,7 @@ int Graph::getIndegree(int vertex)
     return count;
 }
 
+// Function returns the out degree of a given vertex
 int Graph::getOutdegree(int vertex)
 {
     auto it = graph.find(vertex);
@@ -113,6 +118,7 @@ int Graph::getOutdegree(int vertex)
     return graph.at(vertex).size();
 }
 
+// For a weighted graph, this function returns the maximum weight of an edge
 int Graph::costliestEdge()
 {
     auto its = graph.begin();
@@ -128,17 +134,22 @@ int Graph::costliestEdge()
     return max;
     //TODO: costliestEdge() returns the edge weight of the costliest edge
 }
+
+// Basic Greedy coloring algorithm that colors each vertex the first color available
 void Graph::greedyColoring(map<int, string> c, int numbcolors_) {
-    auto its = graph.begin();
-    int max = its->second.at(0).second;
+    //auto its = graph.begin();
+    //int max = its->second.at(0).second;
+    // Iterate through Graph
     for (auto it = graph.begin(); it != graph.end(); ++it) {
         int ccount = 0;
         map<int, int> holder;
+        // Store colors of neighbors
         for (int i = 0; i < it->second.size(); i++) {
 
             holder.emplace(col.at(it->second.at(i).first).first, 0);
 
         }
+        // Finds the first color available that's not already coloring a neighbor
         for (int j = 1; j <= numbcolors_; j++) {
             if (holder.find(j) == holder.end()) {
                 pair<int, string> p;
@@ -147,7 +158,8 @@ void Graph::greedyColoring(map<int, string> c, int numbcolors_) {
                 col.at(it->first) = p;
                 break;
             }
-        }
+        } 
+        // Inserts that color into color map
         if (col.at(it->first).first == 0) {
             pair<int, string> p;
             p.first = 1;
@@ -160,21 +172,26 @@ void Graph::greedyColoring(map<int, string> c, int numbcolors_) {
     }
 }
 
+// Modified Welsh Powell Greedy Algorithm, sorts by descending adjacencies and then iterates in that order finding the first available color
 void Graph::WelshPowellColoring(map<int, string> c, int numbcolors_) {
     multimap<int, int> reverse;
+    //Creates a multimap that stores the number of adjacencies as key and vertices as values
     for (auto it = m.begin(); it != m.end(); ++it) {
         if (graph.find(it->first) != graph.end()) {
             reverse.emplace(it->second, it->first);
         }
     }
+    // Iterate through multimap in descending order using (r) reverse functions
     for (auto it = reverse.rbegin(); it != reverse.rend(); ++it) {
         int ccount = 0;
         map<int, int> holder;
+        // Checks color of neighbors
         for (int i = 0; i < graph.at(it->second).size(); i++) {
 
             holder.emplace(col.at(graph.at(it->second).at(i).first).first, 0);
 
         }
+        // Colors Vertex the first available color
         for (int j = 1; j <= numbcolors_; j++) {
             if (holder.find(j) == holder.end()) {
                 pair<int, string> p;
@@ -185,6 +202,7 @@ void Graph::WelshPowellColoring(map<int, string> c, int numbcolors_) {
             }
         }
     }
+    // Attempted full Welsh Powell
     /*int i = 1;
     
     for (auto it = reverse.rbegin(); it != reverse.rend(); ++it) {
@@ -234,22 +252,26 @@ void Graph::WelshPowellColoring(map<int, string> c, int numbcolors_) {
     }*/
 }
 
-
+// Function does nothing
 int Graph::mostAdjacents()
 {
     return 0;
-    //TODO: costliestEdge() returns the edge weight of the costliest edge
+    
 }
 
 int main()
 {
-    //DO NOT CHANGE THIS FUNCTION. CHANGE YOUR IMPLEMENTATION CODE TO MAKE IT WORK
-
+    
+    // Welcome Menu
     cout << "Welcome to our Final Project for Cop 3530!" << endl;
-    cout << "We will compare two different graph coloring algorithms. One is a basic greedy algorithm and the other is a modified Welsh Powell Algorithm" << endl << endl;
-
-
+    cout << "We will compare two different graph coloring algorithms. One is a basic greedy algorithm and the other is a modified Welsh Powell Algorithm" << endl;
+    cout << "We will insert 100,000 Vertexes into an undirected graph and give each a maximum of five adjacencies." << endl;
+    cout << "Our color wheel will have six colors: red, blue, green, yellow, orange, and purple " << endl << endl;
+    
+    // Initialize Graph
     Graph g;
+
+    // Create Map to hold our color wheel
     map<int, string> color;
     color.emplace(0, "");
     color.emplace(1, "Red");
@@ -261,10 +283,12 @@ int main()
     //color.emplace(7, "Pink");
     int numbcolors = 6;
 
+    // Seed Map m with 0 neighbors
     for (int i = 1; i <= 100000; i++) {
 
         g.m.emplace(i, 0);
     }
+    // Seed color map with null color
     for (int i = 1; i <= 100000; i++) {
         pair<int, string> x;
         x.first = 0;
@@ -272,6 +296,7 @@ int main()
         g.col.emplace(i, x);
     }
 
+    // For 100,000 vertices, insert between 1 and 5 randomized edges
     for (int i = 1; i <= 100000; i++) {
         std::random_device random;
         std::mt19937 rng(random());
@@ -294,16 +319,21 @@ int main()
         }
 
     }
-    int max = 0;
+
+    // Check to ensure a maximum of 5 Adjacencies
+    /*int max = 0;
     for (int i = 1; i <= 100000; i++) {
         if (g.m.at(i) > max) {
             max = g.m.at(i);
         }
-    }
+    }*/
     //cout << max; Checking max neighbors from random assignment
     //vector<int> v = g.getAdjacent(1); 
     //cout << 
+    // Copy Graph over to another for separate Welsh Powell Comparison
     Graph gW = g;
+
+    // Conduct Timing Comparison
     cout << "Timing comparison between Basic Greedy Algorithm and modified Welsh Powell Algorithm " << endl;
 
     auto start = std::chrono::high_resolution_clock::now();
@@ -320,6 +350,7 @@ int main()
     time = chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     cout << "Modified Welsh Powell Greedy Algorithm Time: " << time.count() << " milliseconds" << endl << endl;
 
+    // Displays sample of first 10 vertices & neighbors and their coloring for Basic Greedy colored graph
     cout << "Basic Greedy Algorithm Color Display: First 10 Vertices and Neighbors" << endl;
    
     for (int i = 1; i <= 10; i++) {
@@ -343,7 +374,7 @@ int main()
     }
     cout << endl;
 
-    
+    // Test seeding
     /*for (int i = 1; i <= 100000; i++) {
 
         gW.m.emplace(i, 0);
@@ -377,6 +408,7 @@ int main()
 
     }*/
     
+    // Displays sample of first 10 vertices & neighbors and their coloring for Modified Welsh Powell Greedy colored graph
     cout << "Modified Welsh Powell Greedy Algorithm Color Display: First 10 Vertices and Neighbors" << endl;
     for (int i = 1; i <= 10; i++) {
         cout << "Vertex: " << i << " - Color: " << gW.col.at(i).second << endl;
@@ -400,6 +432,7 @@ int main()
     }
     cout << endl;
 
+    // Create counts and record the number of each color used for both algorithms  and print out their respective values
     cout << "Color breakdown for both algorithms" << endl;
     int count1 = 0;
     int count2 = 0;
@@ -459,48 +492,5 @@ int main()
     cout << "Modified Welsh Powell Greedy Algorithm Color Count:" << endl;
     cout << "Red: " << count1 << ", Blue: " << count2 << ", Green: " << count3 << ", Yellow: " << count4 << ", Orange: " << count5 << ", Purple: " << count6 << endl;
 
-    /*int noOfLines, operation, vertex, to, fro, weight, source, j;
-    vector<int> arr;
-    int arrSize;
-    Graph g;
-    cin >> noOfLines;
-    for (int i = 0; i < noOfLines; i++)
-    {
-        cin >> operation;
-        switch (operation)
-        {
-        case 1:
-            cin >> fro;
-            cin >> to;
-            cin >> weight;
-            g.insertEdge(fro, to, weight);
-            break;
-        case 2:
-            cin >> fro;
-            cin >> to;
-            cout << g.isEdge(fro, to) << "\n";
-            break;
-        case 3:
-            cin >> fro;
-            cin >> to;
-            cout << g.getWeight(fro, to) << "\n";
-            break;
-        case 4:
-            cin >> vertex;
-            arr = g.getAdjacent(vertex);
-            arrSize = arr.size();
-            j = 0;
-            while (j < arrSize)
-            {
-                cout << arr[j] << " ";
-                j++;
-            }
-            cout << "\n";
-            break;
-        case 5:
-            g.printGraph();
-            cout << "\n";
-            break;
-        }
-    }*/
+   
 }
