@@ -244,6 +244,11 @@ int Graph::mostAdjacents()
 int main()
 {
     //DO NOT CHANGE THIS FUNCTION. CHANGE YOUR IMPLEMENTATION CODE TO MAKE IT WORK
+
+    cout << "Welcome to our Final Project for Cop 3530!" << endl;
+    cout << "We will compare two different graph coloring algorithms. One is a basic greedy algorithm and the other is a modified Welsh Powell Algorithm" << endl << endl;
+
+
     Graph g;
     map<int, string> color;
     color.emplace(0, "");
@@ -295,26 +300,50 @@ int main()
             max = g.m.at(i);
         }
     }
-    cout << max;
+    //cout << max; Checking max neighbors from random assignment
     //vector<int> v = g.getAdjacent(1); 
     //cout << 
     Graph gW = g;
+    cout << "Timing comparison between Basic Greedy Algorithm and modified Welsh Powell Algorithm " << endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    
     g.greedyColoring(color, numbcolors);
-    for (int i = 99990; i <= 100000; i++) {
-        cout << g.col.at(i).second << endl << i << endl;
+    auto stop = chrono::high_resolution_clock::now();
+    auto time = chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    cout << "Basic Greedy Algorithm Time: " << time.count() << " milliseconds" << endl;
+
+    start = std::chrono::high_resolution_clock::now();
+
+    gW.WelshPowellColoring(color, numbcolors);
+    stop = chrono::high_resolution_clock::now();
+    time = chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    cout << "Modified Welsh Powell Greedy Algorithm Time: " << time.count() << " milliseconds" << endl << endl;
+
+    cout << "Basic Greedy Algorithm Color Display: First 10 Vertices and Neighbors" << endl;
+   
+    for (int i = 1; i <= 10; i++) {
+        cout << "Vertex: " << i << " - Color: " <<  g.col.at(i).second << endl;
         vector<int> v = g.getAdjacent(i);
+        cout << "Neighbors: ";
         for (int j = 0; j < v.size(); j++) {
-            cout << v.at(j) << " " << g.col.at(v.at(j)).second << " ";
+            cout <<  v.at(j) << " - Color: " << g.col.at(v.at(j)).second;
+            if (j != v.size() - 1) {
+                cout << ", ";
+            }
             //cout << v.at(j) << " ";
             //cout << g.col.at(v.at(j)).first << endl;   
-            vector<int> k = g.getAdjacent(v.at(j));
-            for (int z = 0; z < k.size(); z++) {
+           // vector<int> k = g.getAdjacent(v.at(j));
+            //for (int z = 0; z < k.size(); z++) {
                // cout << k.at(z) << " ";
-            }
-            cout << endl;
+            //}
+            //cout << endl;
         }
-
+        cout << endl;
     }
+    cout << endl;
+
+    
     /*for (int i = 1; i <= 100000; i++) {
 
         gW.m.emplace(i, 0);
@@ -347,22 +376,89 @@ int main()
         }
 
     }*/
-    gW.WelshPowellColoring(color, numbcolors);
+    
+    cout << "Modified Welsh Powell Greedy Algorithm Color Display: First 10 Vertices and Neighbors" << endl;
     for (int i = 1; i <= 10; i++) {
-        cout << gW.col.at(i).second << endl << i << endl;
+        cout << "Vertex: " << i << " - Color: " << gW.col.at(i).second << endl;
         vector<int> v = gW.getAdjacent(i);
+        cout << "Neighbors: ";
         for (int j = 0; j < v.size(); j++) {
-            cout << v.at(j) << " " << gW.col.at(v.at(j)).second << " ";
+            cout << v.at(j) << " - Color: " << gW.col.at(v.at(j)).second;
+            if (j != v.size() - 1) {
+                cout << ", ";
+            }
             //cout << v.at(j) << " ";
             //cout << g.col.at(v.at(j)).first << endl;   
-            vector<int> k = gW.getAdjacent(v.at(j));
-            for (int z = 0; z < k.size(); z++) {
-                // cout << k.at(z) << " ";
-            }
-            cout << endl;
+           // vector<int> k = g.getAdjacent(v.at(j));
+            //for (int z = 0; z < k.size(); z++) {
+               // cout << k.at(z) << " ";
+            //}
+            //cout << endl;
         }
+        cout << endl;
 
     }
+    cout << endl;
+
+    cout << "Color breakdown for both algorithms" << endl;
+    int count1 = 0;
+    int count2 = 0;
+    int count3 = 0;
+    int count4 = 0;
+    int count5 = 0;
+    int count6 = 0;
+    for (auto i = g.col.begin(); i != g.col.end(); ++i) {
+        if (i->second.first == 1) {
+            count1++;
+        }
+        if (i->second.first == 2) {
+            count2++;
+        }
+        if (i->second.first == 3) {
+            count3++;
+        }
+        if (i->second.first == 4) {
+            count4++;
+        }
+        if (i->second.first == 5) {
+            count5++;
+        }
+        if (i->second.first == 6) {
+            count6++;
+        }
+    }
+    cout << "Basic Greedy Algorithm Color Count:" << endl;
+    cout << "Red: " << count1 << ", Blue: " << count2 << ", Green: " << count3 << ", Yellow: " << count4 << ", Orange: " << count5 << ", Purple: " << count6 << endl;
+
+    count1 = 0;
+    count2 = 0;
+    count3 = 0;
+    count4 = 0;
+    count5 = 0;
+    count6 = 0;
+    for (auto i = gW.col.begin(); i != gW.col.end(); ++i) {
+        if (i->second.first == 1) {
+            count1++;
+        }
+        if (i->second.first == 2) {
+            count2++;
+        }
+        if (i->second.first == 3) {
+            count3++;
+        }
+        if (i->second.first == 4) {
+            count4++;
+        }
+        if (i->second.first == 5) {
+            count5++;
+        }
+        if (i->second.first == 6) {
+            count6++;
+        }
+    }
+    cout << "Modified Welsh Powell Greedy Algorithm Color Count:" << endl;
+    cout << "Red: " << count1 << ", Blue: " << count2 << ", Green: " << count3 << ", Yellow: " << count4 << ", Orange: " << count5 << ", Purple: " << count6 << endl;
+
     /*int noOfLines, operation, vertex, to, fro, weight, source, j;
     vector<int> arr;
     int arrSize;
