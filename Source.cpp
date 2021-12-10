@@ -27,10 +27,6 @@ public:
     map<int, pair<int, string>> col; 
     void insertEdge(int from, int to, int weight);
     vector<int> getAdjacent(int vertex);
-    int getIndegree(int vertex);
-    int getOutdegree(int vertex);
-    int costliestEdge();
-    int mostAdjacents();
     void greedyColoring(map<int, string> c, int numbcolors_);
     void WelshPowellColoring(map<int, string> c, int numbcolors_);
 };
@@ -80,60 +76,11 @@ vector<int> Graph::getAdjacent(int vertex)
         }
         std::sort(store.begin(), store.end());
     }
-    //TODO: getAdjacent() returns a sorted vector of all vertices that are connected to a vertex
+    //TODO: getAdjacent()ï¿½returns a sorted vector of all vertices that are connected to a vertex
     return store;
 }
 
-// Function returns the in degree of a given vertex
-int Graph::getIndegree(int vertex)
-{
-    /*
-        TODO: getIndegree() returns the indegree of vertex
-    */
-    int count = 0;
-    for (auto it = graph.begin(); it != graph.end(); ++it) {
 
-        for (int i = 0; i < it->second.size(); i++) {
-            if (it->second.at(i).first == vertex) {
-                count++;
-            }
-        }
-    }
-    return count;
-}
-
-// Function returns the out degree of a given vertex
-int Graph::getOutdegree(int vertex)
-{
-    auto it = graph.find(vertex);
-    if (it == graph.end()) {
-
-        //it->second.push(arr[i]);
-
-        return 0;
-    }
-    /*
-        TODO: getOutdegree() returns the outdegree of vertex
-    */
-    return graph.at(vertex).size();
-}
-
-// For a weighted graph, this function returns the maximum weight of an edge
-int Graph::costliestEdge()
-{
-    auto its = graph.begin();
-    int max = its->second.at(0).second;
-    for (auto it = graph.begin(); it != graph.end(); ++it) {
-
-        for (int i = 0; i < it->second.size(); i++) {
-            if (it->second.at(i).second > max) {
-                max = it->second.at(i).second;
-            }
-        }
-    }
-    return max;
-    //TODO: costliestEdge() returns the edge weight of the costliest edge
-}
 
 // Basic Greedy coloring algorithm that colors each vertex the first color available
 void Graph::greedyColoring(map<int, string> c, int numbcolors_) {
@@ -252,12 +199,7 @@ void Graph::WelshPowellColoring(map<int, string> c, int numbcolors_) {
     }*/
 }
 
-// Function does nothing
-int Graph::mostAdjacents()
-{
-    return 0;
-    
-}
+
 
 int main()
 {
